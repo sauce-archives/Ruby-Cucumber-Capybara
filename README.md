@@ -26,6 +26,10 @@ This code is provided on an "AS-IS” basis without warranty of any kind, either
     $ export SAUCE_USERNAME=<your Sauce Labs username>
     $ export SAUCE_ACCESS_KEY=<your Sauce Labs access key>
     ```
+    * If you are using the EU data center:
+    ```
+    $ export SAUCE_DATA_CENTER=EU
+    ```
 
 3. Project Dependencies
 	* Install packages (Use sudo if necessary)

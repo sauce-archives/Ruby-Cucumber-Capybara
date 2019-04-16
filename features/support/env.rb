@@ -11,10 +11,8 @@ Before do |scenario|
     browser = options.delete(:browser_name).to_sym
     caps = Selenium::WebDriver::Remote::Capabilities.send(browser, options)
 
-    url = 'https://ondemand.saucelabs.com:443/wd/hub'
-
     Capybara::Selenium::Driver.new(app, browser: :remote,
-                                        url: url,
+                                        url: sauce_url,
                                         desired_capabilities: caps)
   end
   Capybara.current_driver = :sauce
@@ -22,6 +20,7 @@ end
 
 After do |scenario|
   session_id = Capybara.current_session.driver.browser.session_id
+  SauceWhisk.data_center = "#{sauce_data_center}_VDC".to_sym
   SauceWhisk::Jobs.change_status(session_id, scenario.passed?)
   Capybara.current_session.quit
 end
@@ -81,6 +80,17 @@ def sauce_oss(name)
    username: ENV['SAUCE_USERNAME'],
    access_key: ENV['SAUCE_ACCESS_KEY'],
    selenium_version: '3.141.59'}
+end
+
+def sauce_data_center
+  ENV.fetch('SAUCE_DATA_CENTER', 'US')
+end
+
+def sauce_url
+  {
+    'US' => 'https://ondemand.saucelabs.com:443/wd/hub',
+    'EU' => 'https://ondemand.eu-central-1.saucelabs.com/wd/hub'
+  }.fetch(sauce_data_center)
 end
 
 #
